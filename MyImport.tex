@@ -1,0 +1,337 @@
+\usepackage[USenglish]{babel}        %.................................... Define the language of the typeset.
+\usepackage[T1]{fontenc}             %.................................... Modern Western Font Typsetting scheme
+\usepackage{lmodern}
+\usepackage[margin=0.5in]{geometry} %. Define margins
+\usepackage{multirow}                %.................................... Enable multirow command in tables
+\usepackage{setspace}
+%\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{xstring}
+%\usepackage{ifthen}
+\usepackage{xifthen}
+\usepackage{textcase}
+\hypersetup{
+    unicode            = true                                             , % non-Latin characters in Acrobat' bookmarks
+    pdftoolbar         = true                                             ,     % show Acrobat' toolbar?
+    pdfmenubar         = true                                             , % show Acrobat's menu?
+    pdffitwindow       = false                                            , % window fit to page when opened
+    pdfstartview       = {FitH}                                           , % fits the width of the page to the window
+%    pdfpagemode        = UseNone                                          ,
+    pdfsubject         = {Resume for  Troy C. Haskin}                     , % subject of the document
+    pdfkeywords        = {Resume}                                         , % list of keywords
+    pdfnewwindow       = true                                             , % links in new window
+    colorlinks         = true                                             , % false: boxed links; true: colored links
+    pdftitle           = {Troy Haskin | Resume}                           , % title
+    pdfauthor          = {Troy C. Haskin}                                 , % author
+    pdfcreator         = {pdfTeX v3.1415926-1.40.14}                      , % creator of the document
+    pdfproducer        = {pdfLaTeX, MiKTex 2.9, TeXnicCenter 2.0 Beta 2}  , % producer of the document
+    linkcolor          = blue                                             ,
+    urlcolor           = blue                                             ,
+    pdfdisplaydoctitle = true                                             ,
+    bookmarksopen      = false                                            ,
+}
+
+\renewcommand{\leftmargini}   {1em}
+\renewcommand{\leftmarginii}  {0em}
+\renewcommand{\leftmarginiii} {1.5em}
+\renewcommand{\leftmarginiv}  {0em}
+
+
+
+
+
+% =============================================================================================== %
+%                                        CSV Creation Commands                                    %
+% =============================================================================================== %
+\makeatletter
+
+\newcommand{\MakeCommand}[2]{
+    \expandafter\newcommand\csname #1\endcsname{#2}
+}
+
+\newcommand{\ReMakeCommand}[2]{
+    \expandafter\renewcommand\csname #1\endcsname{#2}
+}
+
+\newcommand{\CSVAppend}[2]{ % #1 = List name, #2 = Token to push on to right
+
+    \@ifundefined{#1}
+        {
+            \MakeCommand{#1}{#2}
+            \expandafter\newcommand\csname #1Append\endcsname[1]{\CSVAppend{#1}{##1}}
+            \expandafter\newcommand\csname #1Prepend\endcsname[1]{\CSVPrepend{#1}{##1}}
+        }{
+            \expandafter\edef\csname #1\endcsname{\csname #1\endcsname,{#2}}
+        }
+}
+
+\newcommand{\CSVPrepend}[2]{ % #1 = List name, #2 = Token to push on to left
+
+    \@ifundefined{#1}
+        {
+            \MakeCommand{#1}{#2}
+            \expandafter\newcommand\csname #1Append\endcsname[1]{\CSVAppend{#1}{##1}}
+            \expandafter\newcommand\csname #1Prepend\endcsname[1]{\CSVPrepend{#1}{##1}}
+        }{
+            \expandafter\edef\csname #1\endcsname{{#2},\csname #1\endcsname}
+        }
+}
+
+\newcommand{\CSVGet}[1]{\csname#1\endcsname}
+
+\newcommand{\CurrentValue}{}
+\newcommand{\CurrentName}{}
+\def\CSVPopAndUpdateValue#1,#2{
+    \renewcommand{\CurrentValue}{#1}
+    \CSVMake[overwrite]{\CurrentName}{#2}
+}
+
+\newcommand{\CSVPop}[1]{ % #1 = List name, #2 = Token to push on to left
+
+    \@ifundefined{#1}
+        {
+%            \MakeCommand{#1}{#2}
+%            \expandafter\newcommand\csname #1Append\endcsname[1]{\CSVAppend{#1}{##1}}
+%            \expandafter\newcommand\csname #1Prepend\endcsname[1]{\CSVPrepend{#1}{##1}}
+        }{
+            \renewcommand{\CurrentName}{#1}
+            \GetTokens{CurrentToken}{RestOfList}{,\CSVGet{#1}}
+        }
+}
+
+
+
+
+
+
+
+\newcommand{\CSVMake}[3][]{ % #1 = List name, #2 = Token to push on to right
+
+    \@ifundefined{#2}
+    {
+        \MakeCommand{#2}{#3}
+        \expandafter\newcommand\csname #2Append\endcsname[1]{\CSVAppend{#2}{##1}}
+        \expandafter\newcommand\csname #2Prepend\endcsname[1]{\CSVPrepend{#2}{##1}}
+    }{
+        \ifthenelse{\equal{#1}{}}
+            {
+                \typeout{*** CSV Note: Creation ignored since list already exists. ***}
+            }{
+                \typeout{*** CSV Note: Overwriting already-created list. ***}
+                \ReMakeCommand{#2}{#3}
+                \@ifundefined{#2Append}{
+                    \expandafter\newcommand\csname #2Append\endcsname[1]{\CSVAppend{#2}{##1}}
+                }{
+                    \expandafter\renewcommand\csname #2Append\endcsname[1]{\CSVAppend{#2}{##1}}
+                }
+                \@ifundefined{#2Prepend}{
+                    \expandafter\newcommand\csname #2Prepend\endcsname[1]{\CSVAppend{#2}{##1}}
+                }{
+                    \expandafter\renewcommand\csname #2Prepend\endcsname[1]{\CSVAppend{#2}{##1}}
+                }
+            }
+    }
+}
+
+
+% ===================================================================================== %
+%                                     <= and >= Commands                                %
+% ===================================================================================== %
+\newcommand{\IfGreaterThanEqualTo}[4]{
+    \ifnum#1>#2
+        #3
+    \else
+        \ifnum#1=#2
+            #3
+        \else
+            #4
+        \fi
+    \fi
+}
+
+\newcommand{\IfLessThanEqualTo}[4]{
+    \ifnum#1<#2
+        #3
+    \else
+        \ifnum#1=#2
+            #3
+        \else
+            #4
+        \fi
+    \fi
+}
+
+
+
+% ===================================================================================== %
+%                                      For-Loop Definition                              %
+% ===================================================================================== %
+
+% Initilaze the recursive command (see usage below) ----------------------
+\newcommand{\ForLoopRecursion}{}
+
+% Define the loop counter ------------------------------------------------
+\newcounter{ForLoopCounter}
+\setcounter{ForLoopCounter}{0}
+
+% Iterator command -------------------------------------------------------
+\newcommand{\For}[4][1]{
+% Arguments
+%   #1 = increment (optional)
+%   #2 = start value
+%   #3 = end value
+%   #4 = <code>
+
+    % Redefine the command used for recursion
+    \renewcommand{\ForLoopRecursion}{
+        #4                                          % Excute <code>
+        \addtocounter{ForLoopCounter}{#1}           % Increment the counter
+        \For[#1]{\value{ForLoopCounter}}{#3}{#4}    % Recurse
+    }
+
+    % Set the counter to the start value 
+    % After the recursion begins, #2 is the current value of the counter and not the start value.
+    \setcounter{ForLoopCounter}{#2}
+    
+    % Switch to deal with positive vs. negative increments (decrements).
+    \ifnum #1 > 0                                           % If positive increment
+        \IfLessThanEqualTo{\value{ForLoopCounter}}{#3}{     % Execute while the LoopCounter is less than or equal to the end value
+            \ForLoopRecursion
+        }{}
+    \else                                                    % If negative increment
+        \IfGreaterThanEqualTo{\value{ForLoopCounter}}{#3}{   % Execute while the LoopCounter is greater than or equal to the end value
+            \ForLoopRecursion
+        }{}
+    \fi
+}
+
+
+% ===================================================================================== %
+%                                Array Building Commands                                %
+% ===================================================================================== %
+
+\newcommand{\DefineNewCounter}[2]{
+    \newcounter{#1}\setcounter{#1}{#2}
+}
+
+\DefineNewCounter{ArrayWorkCounter}{0}
+\newcommand{\ArrayStart}    {ArrayStart}
+\newcommand{\ArrayEnd}      {ArrayEnd}
+\newcommand{\ArrayPosition} {ArrayPosition}
+\newcommand{\ArrayCount}    {ArrayCount}
+
+\newcommand{\ArrayMake}[1]{% #1 = Array name
+
+    \MakeCommand{#1\ArrayPosition}{#1\ArrayPosition}
+    
+    \DefineNewCounter{#1\ArrayPosition} {0}
+    \DefineNewCounter{#1\ArrayStart}    {1}
+    \DefineNewCounter{#1\ArrayEnd}      {0}
+    \DefineNewCounter{#1\ArrayCount}    {0}
+
+}
+
+\newcommand{\ArrayClear}[1]{% #1 = Array name
+    \For[1]{1}{\value{#1\ArrayEnd}}{
+        \ReMakeCommand{#1\roman{ForLoopCounter}}{\relax}
+    }
+    \ReMakeCommand{#1\ArrayPosition}{\relax}
+    \setcounter{#1\ArrayPosition} {0}
+    \setcounter{#1\ArrayStart}    {1}
+    \setcounter{#1\ArrayEnd}      {0}
+    \setcounter{#1\ArrayCount}    {0}
+}
+
+
+
+\newcommand{\ArrayPush}[2]{% #1 = Array name, #2 value to push
+
+    % increment counter
+    \addtocounter{#1\ArrayCount}    {1}
+    \addtocounter{#1\ArrayEnd}      {1}
+
+    % Naming scheme for the Array commands
+    \protected@edef\PushCommand{#1\roman{#1\ArrayEnd}}
+    
+    % Making the Array commands
+    \@ifundefined{\PushCommand}{
+        \MakeCommand{\PushCommand}{#2}
+    }{
+        \ReMakeCommand{\PushCommand}{#2}
+    }
+}
+
+\newcommand{\ArrayPop}[1]{% #1 = Array name
+    \ifnum\value{#1\ArrayCount}>0
+        \csname #1\roman{#1\ArrayEnd}\endcsname
+        \addtocounter{#1\ArrayCount}    {-1}
+        \addtocounter{#1\ArrayEnd}      {-1}
+    \fi
+}
+
+\newcommand{\ArrayPopAndStore}[2]{% #1 = Array name, #2 name of command to store the popped value
+    \ifnum\value{#1\ArrayCount}>0
+        \protected@edef\PoppedValue{\csname #1\roman{#1\ArrayPosition}\endcsname}
+        \MakeCommand{#2}{\PoppedValue}
+        \addtocounter{#1\ArrayCount}    {-1}
+        \addtocounter{#1\ArrayEnd}      {-1}
+    \fi
+}
+
+\newcommand{\ArrayGet}[2]{% #1 = Array name, % 2 = Array position to get
+    \IfGreaterThanEqualTo{#2}{\value{#1\ArrayStart}}{
+        \IfGreaterThanEqualTo{\value{#1\ArrayEnd}}{#2}{
+            \setcounter{ArrayWorkCounter}{#2}
+            \csname #1\roman{ArrayWorkCounter}\endcsname
+        }{2}
+    }{3}
+    
+}
+
+
+
+
+
+\newenvironment{Nomenclature}[1][Nomenclature]{
+    
+    \newcommand{\NomenclatureTitle}{#1}
+    \newlength{\WidestSymbol}
+    \newlength{\WidestSymbolTest}
+    \setlength{\WidestSymbol}{0pt}
+    
+    \setlength{\parindent}{0pt}
+    
+    \ArrayMake{NomenclatureSymbol}
+    \ArrayMake{NomenclatureDescription}
+    \newcommand{\Add}[2]{
+        \ArrayPush{NomenclatureSymbol}{##1}
+        \ArrayPush{NomenclatureDescription}{##2}
+         
+        \settowidth{\WidestSymbolTest}{##1}
+        \ifdim\WidestSymbol<\WidestSymbolTest
+            \setlength{\WidestSymbol}{\WidestSymbolTest}
+        \fi
+    }
+    \let\item\Add
+}{
+    \ifnum\value{\NomenclatureSymbolArrayPosition}>1
+        \textbf{\NomenclatureTitle}
+        \vspace*{0.5em}
+        \begin{spacing}{1.5}
+            \For[-1]{\value{\NomenclatureSymbolArrayPosition}}{1}{
+                \hspace{0.2em}
+                \makebox[1.2\WidestSymbol][l]{\ArrayPop{NomenclatureSymbol}}
+                \ArrayPop{NomenclatureDescription}
+            }
+        \end{spacing}
+        %\the\WidestSymbol
+    \fi
+}
+
+
+
+\makeatother
+
+
+
+

@@ -1,0 +1,301 @@
+%--------------------------------------------%
+%                Premble                     %
+%--------------------------------------------%
+\documentclass[letterpaper,10pt]{article}
+
+\input{MyImport}
+\usepackage{lmodern}
+
+\newcommand{\BlockSkip}{1.5em}
+
+\newenvironment{BlockList}
+{\begin{list}{}{\setlength{\labelwidth}{1em}\setlength{\leftmargin}{4em}\setlength{\topsep}{0em}\setlength{\itemsep}{0.9em}}}
+{\end{list}}
+
+\newenvironment{BulletList}[1]{\begin{list}{#1}{\setlength{\labelwidth}{0.5em}\setlength{\leftmargin}{2.5em}\setlength{\topsep}{0em}\setlength{\itemsep}{0em}\setlength{\parsep}{0.3em}}}
+{\end{list}}
+
+\newenvironment{BlockBulletList}[1]{\begin{list}{#1}{\setlength{\labelwidth}{1em}\setlength{\leftmargin}{5em}\setlength{\topsep}{0em}\setlength{\itemsep}{0.1em}\setlength{\parsep}{0.3em}}}
+{\end{list}}
+
+\newcommand{\TheSectionHeaderBookmark}{}
+\newcommand{\TheSectionHeaderTypeSet}{}
+\newcommand{\Empty}{}
+
+\newcommand{\SectionHeader}[2][]{    
+    \textbf{\large{\StrLeft{#2}{1}{\small \StrGobbleLeft{#2}{1}}}}%
+    \phantomsection
+    \ifthenelse{\isempty{#1}}%
+        {\addcontentsline{toc}{section}{#2}}%
+        {\addcontentsline{toc}{section}{#1}}%
+    \vspace*{0.1em}%
+}
+
+\newenvironment{SectionBlock}[2][]
+    {\SectionHeader[#1]{#2}\rule{0.2em}{0em}\begin{BlockList}}
+    {\end{BlockList}\rule{2em}{0em}}
+    
+\newenvironment{SectionBullet}[3][]{
+    \SectionHeader[#1]{#2}\rule{0.2em}{0em}
+    \begin{BlockBulletList}{#3}
+}{
+    \end{BlockBulletList}\rule{2em}{0em}
+}
+
+\newcommand{\InformationBlock}[1]{
+    \let\BlockName#1
+    \textbf{\large{}}
+}
+
+\newenvironment{Address}[1]{\begin{minipage}[t]{0.3\linewidth}\begin{center}\textbf{#1}\\[0.1em]}{\end{center}\end{minipage}}
+
+\newcommand{\TheName}{}
+\newcommand{\Email}[3]{
+    \href{mailto:#1 #2 <#3>}{#3} 
+}
+
+\newcommand{\TheDegree}       {}
+\newcommand{\TheTimeSpan}     {}
+\newcommand{\TheUniversity}   {}
+\newcommand{\TheDepartment}   {}
+\newcommand{\Degree}       [1]{\renewcommand{\TheDegree}    {#1}}
+\newcommand{\TimeSpan}     [1]{\renewcommand{\TheTimeSpan}  {#1}}
+\newcommand{\University}   [1]{\renewcommand{\TheUniversity}{#1}}
+\newcommand{\Department}   [1]{\renewcommand{\TheDepartment}{#1}}
+
+\ArrayMake{Notes}
+\newcommand{\Note}[1]{
+    \ArrayPush{Notes}{#1}
+}
+\newcommand{\ListNotes}{
+    \ifnum\value{NotesArrayCount}>0
+        \begin{BulletList}{--}
+            \For[1]{1}{\value{NotesArrayEnd}}{\item{\ArrayGet{Notes}{\value{ForLoopCounter}}}}
+        \end{BulletList}
+        \ArrayClear{Notes}
+    \fi
+}
+
+
+\newcommand{\MakeDegreeItem}{
+    \item{
+        \textbf{\TheDegree} \dotfill \TheTimeSpan\\
+        \textit{\TheUniversity}, \TheDepartment\hfill
+        \ListNotes
+    }
+}
+
+\newcommand{\Skip}[1][0.1em]{\\[#1]}
+\let\NewLine\Skip
+
+
+\newcommand{\Relap}{\textsc{Relap5}}
+\newcommand{\Melcor}{\textsc{Melcor}}
+
+\setstretch{1.2}
+
+% ====================================================================================== %
+%                                           Document                                     %
+% ====================================================================================== %
+\begin{document}
+
+\pagestyle{empty}
+
+% ================================================== %
+%                      Name                          %
+% ================================================== %
+\begin{center}
+    \Large{\textsc{Troy C. Haskin}}
+    \rule[1.1em]{\linewidth}{0.05em}
+\end{center}\vspace{-2.6em}
+
+{
+    \centering
+    1500 Engineering Drive          \NewLine
+    841 Engineering Research Bldg.  \NewLine
+    Madison, WI 53706               \NewLine
+    608.265.4056                    \NewLine
+    \Email{Troy}{Haskin}{haskin@wisc.edu}
+
+}
+\null\vspace{0.50em}
+
+
+% ================================================== %
+%                    EDUCATION                       %
+% ================================================== %
+\begin{SectionBlock}[Education]{EDUCATION}
+%
+%
+% PhD NE
+%
+    \Degree{Ph.D. Nuclear Engineering}
+    \University{University of Wisconsin--Madison}
+    \Department{Department of Engineering Physics}
+    \TimeSpan{September 2008 -- Present}
+    \Note{Concurrently received B.S. and M.S. in Nuclear Engineering from UW--Madison in May 2011}
+    \Note{Graduate GPA: 3.68 / 4.0; Undergraduate GPA: 3.24 / 4.0 }
+    \Note{Currently focused on modeling a UW--Madison experiment involving a low pressure, natural circulation water loop with radiant heating; investigating the stability of the system under various conditions.}
+    \MakeDegreeItem
+%
+%
+% MS ME
+%    
+    \Degree{M.S. Mechanical Engineering}
+    \Department{Mechanical Engineering}
+    \TimeSpan{September 2009 -- May 2012}
+    \Note{GPA: 3.80 / 4.0}
+    \Note{Acquired through course work with an emphasis on thermohydraulic theory.}
+    \MakeDegreeItem
+%
+%
+% BSMS NE
+%
+    %\Degree{B.S./M.S Nuclear Engineering}
+    %\Department{Department of Engineering Physics}
+    %\TimeSpan{September 2004 -- September 2009}
+    %\Note{Undergraduate GPA: 3.24 / 4.0; Master's GPA: 3.34 / 4.0}
+    %\Note{Senior design: documentation, verification, and validation for a RELAP5 model of a General Atomics high temperature, prismatic reactor.}
+    %\MakeDegreeItem
+%
+%
+% Japanese Certificate
+%
+    \Degree{Japanese Technical Communications Certificate}
+    \Department{Department of Engineering Professional Development}
+    \TimeSpan{September 2006 -- May 2008}
+    \Note{Four semesters of conversational Japanese}
+    \Note{Two semesters of technical Japanese vocabulary and translations for a variety of scientific fields.}
+    \MakeDegreeItem
+\end{SectionBlock}
+
+
+% ================================================== %
+%                    Employment                      %
+% ================================================== %
+\begin{SectionBlock}[Employment]{EMPLOYMENT}
+%
+% RA
+%
+     \item {\textbf{Research Assistant} \dotfill September 2008 -- Present\\
+               \textit{University of Wisconsin--Madison}, Department of Engineering Physics \hfill
+          \begin{BulletList}{--}
+               \item {Researching the thermohydraulic behavior of air and water-cooled (single and two-phase) cooling 
+                      systems for next generation reactors with an emphasis on system stability.}
+               \item {System modeling with \Melcor{} for the cooling systems and experimental setups at the university.}
+               \item {Mentoring new students in modeling various problems in both \Relap{} and \Melcor{}.}
+          \end{BulletList}
+     }
+%
+% SNL
+%
+     \item{\textbf{Summer Intern} \dotfill Summer 2011\\
+               \textit{Sandia National Laboratories}, Severe Accident Modeling \hfill
+               \begin{BulletList}{--}
+                    \item {Coupled air-cooled and water-cooled Reactor Cavity Cooling System designs with a full-scale pebble bed \Melcor{} model; 
+                           updated a modular reactor \Melcor{} model to reflect current, anticipated design.}
+                    \item {Performed several accident scenarios for both core models.}
+               \end{BulletList}
+     }
+%
+% ANL
+%
+     \item{\textbf{Summer Intern} \dotfill Summer 2008\\
+               \textit{Argonne National Laboratory}, Nuclear Engineering Division \hfill
+               \begin{BulletList}{--}
+                    \item {Performed documentation, verification, and validation for a \Relap{} model of a General Atomics high temperature, prismatic reactor.}
+                    \item {Modeled several anticipated transients without SCRAM and analyzed results.}
+               \end{BulletList}
+     }
+\clearpage
+%
+% NE 411
+%
+\item{\textbf{Class Lecturer} \dotfill Fall 2013\\
+               \textit{University of Wisconsin--Madison}, Department of Engineering Physics \hfill
+               \begin{BulletList}{--}
+                    \item {Senior level class that aims to utilize all previous student experience for analysis and understanding of various reactor systems and components under a wide range of operation conditions.}
+                    \item{ Topics covered: defense-in-depth, thermomechanical stress analysis, LWR thermohydraulics, two-phase flow fundamentals, LWR accident scenarios, power cycle analysis, core thermal design, and introduction to advanced reactors designs.}
+                    \item {Prepared and presented lectures, homework, and exams.}
+               \end{BulletList}
+     }
+%
+% Tutor
+%     
+     \item {\textbf{Undergraudate Tutor} \dotfill     January 2007 -- Present \\
+        \textit{University of Wisconsin--Madison}, Undergraduate Learning Center \hfill 
+        \begin{BulletList}{--}
+            \item {Helping students understand concepts more deeply and develop problem solving strategies for the introductory and intermediate engineering classes.}
+            \item {Classes covered include: Thermohydraulics, Heat Transfer, Calculus, Linear Algebra, and others.}
+        \end{BulletList}
+     }
+\end{SectionBlock}
+
+
+
+%--------------------------------------------%
+%                Notable Classes             %
+%--------------------------------------------%
+\begin{SectionBullet}[Notable Classes]{NOTABLE CLASSES}{--}
+    \item {Computational Fluid Dynamics (wrote 2D, incompressible solver in \textsc{Matlab})}
+    \item {Monte Carlo (Theory and MCNP5)}
+    \item {Uncertainty and error propagation}
+    \item {Two-phase and turbulent momentum/heat transfer}
+    \item {Numerical methods for hyperbolic and elliptic systems (e.g., Godunov methods, Continuous and Discontinuous Galerkin methods)}
+\end{SectionBullet}
+
+
+
+
+%--------------------------------------------%
+%             Computer Experience            %
+%--------------------------------------------%
+\begin{SectionBullet}[Computer Experience]{COMPUTER EXPERIENCE}{--}
+    \item {Code Examples: \href{https://github.com/troyhaskin?tab=repositories}{My GitHub Repositories}}
+    \item {Programming:  Fortran 90/95, \textsc{Matlab}}
+    \item {System Analysis Programs: \Relap{}, \Melcor{}}
+    \item {Operating systems: Windows and Unix-like/Linux (minor experience)}
+    \item {Productivity Suites: Microsoft Word, OpenOffice.org, Google Docs}
+    \item {Miscellaneous: \LaTeX{}, Git/GitHub, Mathematica, EES, PHP, HTML/CSS, XML}
+    \item {Minor Experience: C, C++, XSLT, and JavaScript (including jQuery and Google Apps Script)}
+\end{SectionBullet}
+
+
+
+
+%--------------------------------------------%
+%             Involvement                    %
+%--------------------------------------------%
+\begin{SectionBullet}[Involvement]{INVOLVEMENT}{--}
+    \item {Membership: ANS National}
+    %\item {SIAM-UW President (2011--2012)}
+    \item {Communications officer: 
+                ANS-UW Student Section  (2008--2009),
+                WIN-UW Student Section  (2008--2009),
+                SIAM-UW Student Section (2010--2011)
+    }
+    \item {Webmaster: 
+            ANS-UW Student Section (2008--2010),
+            WIN-UW Student Section (2008--2010),
+            SIAM-UW Student Section (2010--2011),
+            Oak Ridge/Knoxville ANS Local Section (2011)
+    }
+\end{SectionBullet}
+
+
+\begin{SectionBullet}[Publications]{PUBLICATIONS}{--}
+    \item{
+        Lisowski, D. D., Haskin, T. C., Tokuhiro, A., Anderson, M. H., \& Corradini, M. L. (2013).
+        Study on the Behavior of an Asymmetrically Heated Reactor Cavity Cooling System with Water in Single Phase.
+        Nuclear Technology, 183(1), 75-87.
+    }
+\end{SectionBullet}
+
+
+
+\end{document}
+
+
+
+
+

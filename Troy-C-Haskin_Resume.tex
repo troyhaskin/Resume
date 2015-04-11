@@ -47,7 +47,13 @@
     \textbf{\large{}}
 }
 
-\newenvironment{Address}[1]{\begin{minipage}[t]{0.3\linewidth}\begin{center}\textbf{#1}\\[0.1em]}{\end{center}\end{minipage}}
+\newenvironment{Address}[1]{%
+    \begin{minipage}[t]{0.3\linewidth}%
+        \begin{center}%
+            \textbf{#1}\\[0.1em]%
+} {%
+    \end{center}\end{minipage}%
+}
 
 \newcommand{\TheName}{}
 \newcommand{\Email}[3]{
@@ -111,10 +117,10 @@
 
 {
     \centering
-    1500 Engineering Drive          \NewLine
-    841 Engineering Research Bldg.  \NewLine
-    Madison, WI 53706               \NewLine
-    608.265.4056                    \NewLine
+    1500 Engineering Drive          \\[-0.20em]
+    841 Engineering Research Bldg.  \\[-0.20em]
+    Madison, WI 53706               \\[-0.20em]
+    608.265.4056                    \\[-0.20em]
     \Email{Troy}{Haskin}{haskin@wisc.edu}
 
 }
